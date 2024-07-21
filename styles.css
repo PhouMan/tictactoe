@@ -1,0 +1,28 @@
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+h1 {
+    margin: 16px;
+}
+
+#gameBoard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Creates 3 columns of equal width */
+    grid-template-rows: repeat(3, 1fr); /* Creates 3 rows of equal height */
+    gap: 10px; /* Optional: Adds some space between the tiles */
+    width: 300px; /* Adjust the width as needed */
+    height: 300px; /* Adjust the height as needed */
+    margin: auto; /* Center the board */
+}
+
+.tile {
+    background-color: #f0f0f0; /* Example background color for the tiles */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    font-size: large;
+}
+
