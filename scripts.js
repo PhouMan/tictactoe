@@ -47,6 +47,19 @@ function gameControl(){
 
     const board = gameBoard();
 
+    const inputName = () => {
+        const nameForm = document.getElementById("nameInput");
+        nameForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            const formData = new FormData(event.target);
+            const formObj = Object.fromEntries(formData);
+            players[0].name = formObj.playerOneName;
+            players[1].name = formObj.playerTwoName;
+            nameForm.remove();
+            loadBoard();
+        });
+    }
+
     const players = [
         {name: playerOne,
         token: 1
@@ -77,6 +90,7 @@ function gameControl(){
             if (checkWin() !== null){
                 turn = document.getElementById("turn");
                 turn.textContent = `${players[checkWin()-1].name} wins!`;
+                restartGame();
             }
         } 
     }
@@ -173,11 +187,32 @@ function gameControl(){
         return true;
     }
 
+    const restartGame = () => {
+        turn = document.getElementById("turn");
+        turn.textContent = "";
+        const gameBoard = board.getBoard();
+        
+        const restartBtn = document.createElement("button");
+        restartBtn.textContent = "Restart";
+        restartBtn.addEventListener("click", function(event) {
+            for (let i = 0; i < 3; i++){
+                for (let j = 0; j < 3; j++){
+                    gameBoard[i][j].tick(0);
+                    
+                }
+            }
+            restartBtn.remove();
+            loadBoard();
+        });
+        turn.appendChild(restartBtn);
+    }
+
 
     return {
-        loadBoard
+        loadBoard,
+        inputName
     };
 }
 
 gameController = gameControl();
-gameController.loadBoard();
+gameController.inputName();
