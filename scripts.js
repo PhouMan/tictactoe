@@ -189,7 +189,6 @@ function gameControl(){
 
     const restartGame = () => {
         turn = document.getElementById("turn");
-        turn.textContent = "";
         const gameBoard = board.getBoard();
         
         const restartBtn = document.createElement("button");
