@@ -171,6 +171,7 @@ function gameControl(){
         if (isFull()){
             turn = document.getElementById("turn");
             turn.textContent = "Draw";
+            restartGame();
             return true;
         }
     }
