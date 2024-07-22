@@ -47,6 +47,19 @@ function gameControl(){
 
     const board = gameBoard();
 
+    const inputName = () => {
+        const nameForm = document.getElementById("nameInput");
+        nameForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            const formData = new FormData(event.target);
+            const formObj = Object.fromEntries(formData);
+            players[0].name = formObj.playerOneName;
+            players[1].name = formObj.playerTwoName;
+            nameForm.remove();
+            loadBoard();
+        });
+    }
+
     const players = [
         {name: playerOne,
         token: 1
@@ -68,7 +81,18 @@ function gameControl(){
 
     const playMark = (row, column) => {
         const gameBoard = board.getBoard();
-    
+
+        if (gameBoard[row][column].getStatus() === 0) {   
+            gameBoard[row][column].tick(getCurrPlayer().token);
+            
+            switchTurn();
+            loadBoard();
+            if (checkWin() !== null){
+                turn = document.getElementById("turn");
+                turn.textContent = `${players[checkWin()-1].name} wins!`;
+                restartGame();
+            }
+        } 
     }
 
     //Logic for displying the board
@@ -94,6 +118,8 @@ function gameControl(){
                 htmlBoard.appendChild(tileBtn);
             }
         }
+        turn = document.getElementById("turn");
+        turn.textContent = `It is ${getCurrPlayer().name}'s turn!`;
     };
 
     // Checks the state of a cell
@@ -108,13 +134,84 @@ function gameControl(){
         }
     }
 
+    const checkWin = () => {
+        const gameBoard = board.getBoard();
+        checkDraw();
+
+        // Check rows
+        for (let i = 0; i < 3; i++) {
+            if (gameBoard[i][0].getStatus() !== 0 && gameBoard[i][0].getStatus() === gameBoard[i][1].getStatus() 
+            && gameBoard[i][1].getStatus() === gameBoard[i][2].getStatus()) {
+                return gameBoard[i][0].getStatus();
+            }
+        }
+
+        // Check columns
+        for (let j = 0; j < 3; j++) {
+            if (gameBoard[0][j].getStatus() !== 0 && gameBoard[0][j].getStatus() === gameBoard[1][j].getStatus() && 
+            gameBoard[1][j].getStatus() === gameBoard[2][j].getStatus()) {
+                return gameBoard[0][j].getStatus();
+            }
+        }
+
+        // Check diagonals
+        if (gameBoard[0][0].getStatus() !== 0 && gameBoard[0][0].getStatus() === gameBoard[1][1].getStatus() && 
+        gameBoard[1][1].getStatus() === gameBoard[2][2].getStatus()) {
+            return gameBoard[0][0].getStatus();
+        }
+        if (gameBoard[0][2].getStatus() !== 0 && gameBoard[0][2].getStatus() === gameBoard[1][1].getStatus() && 
+        gameBoard[1][1].getStatus() === gameBoard[2][0].getStatus()) {
+            return gameBoard[0][2].getStatus();
+        }
+        
+        return null;
+    }
+
+    const checkDraw = () => {
+        if (isFull()){
+            turn = document.getElementById("turn");
+            turn.textContent = "Draw";
+            return true;
+        }
+    }
+    //checks if the board is full
+    const isFull = () => {
+        const gameBoard = board.getBoard();
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (gameBoard[i][j].getStatus() === 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    const restartGame = () => {
+        turn = document.getElementById("turn");
+        const gameBoard = board.getBoard();
+        
+        const restartBtn = document.createElement("button");
+        restartBtn.textContent = "Restart";
+        restartBtn.addEventListener("click", function(event) {
+            for (let i = 0; i < 3; i++){
+                for (let j = 0; j < 3; j++){
+                    gameBoard[i][j].tick(0);
+                    
+                }
+            }
+            restartBtn.remove();
+            loadBoard();
+        });
+        turn.appendChild(restartBtn);
+    }
+
 
     return {
-        switchTurn,
-        getCurrPlayer,
-        loadBoard
+        loadBoard,
+        inputName
     };
 }
 
 gameController = gameControl();
-gameController.loadBoard();
+gameController.inputName();

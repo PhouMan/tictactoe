@@ -26,3 +26,27 @@ h1 {
     font-size: large;
 }
 
+#turn {
+    margin: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#submit {
+    width: 20%;
+    padding: 5px 10px;
+}
+
+.inputArea {
+    display: flex;
+    gap: 8px;
+}
+
+#nameInput {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
